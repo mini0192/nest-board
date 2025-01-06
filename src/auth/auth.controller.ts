@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Res, UnprocessableEntityException, ForbiddenException, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Body, Res, ForbiddenException, UseGuards, Request } from '@nestjs/common';
 import { LoginDto } from './dto/login-auth.dto';
 import { User } from 'src/users/entities/user.entity';
 import * as bcrypt from 'bcrypt'
@@ -6,6 +6,7 @@ import { Response } from 'express';
 import { UsersService } from 'src/users/users.service';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
+import { AuthData } from './dto/auth-data.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -37,9 +38,9 @@ export class AuthController {
 
   @UseGuards(AuthGuard("refresh"))
   @Post('refresh')
-  restoreAccessToken(@Req() req, @Res() res: Response) {
-    const user = req.user;
-    const jwtToken: string = this.authsService.getAccessToken({ user });
+  restoreAccessToken(@Request() req, @Res() res: Response) {
+    const auth: AuthData = req.user;
+    const jwtToken: string = this.authsService.getAccessToken({ user: auth });
 
     this.setJwtHeader(res, jwtToken);
     

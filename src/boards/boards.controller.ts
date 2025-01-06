@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { BoardsService } from './boards.service';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { AuthData } from 'src/auth/dto/auth-data.dto';
 
 @Controller('boards')
 export class BoardsController {
@@ -10,8 +11,9 @@ export class BoardsController {
 
   @UseGuards(AuthGuard("access"))
   @Post()
-  create(@Body() createBoardDto: CreateBoardDto) {
-    return this.boardsService.create(createBoardDto);
+  create(@Body() createBoardDto: CreateBoardDto, @Request() req) {
+    const auth: AuthData = req.user;
+    return this.boardsService.create(createBoardDto, auth);
   }
 
   @Get()

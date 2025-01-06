@@ -10,7 +10,7 @@ import * as bcrypt from 'bcrypt'
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private userRepository: Repository<User>
+    private readonly userRepository: Repository<User>
   ) {}
 
   async create(createUserDto: CreateUserDto) {
